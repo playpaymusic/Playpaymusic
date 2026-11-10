@@ -13,8 +13,8 @@
 </main><footer>© 2026 PLAY PAY MUSIC · Built for artists and listeners worldwide</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 // Paste your Supabase Project URL and anon/public key below after creating the project.
-const SUPABASE_URL='PASTE_YOUR_SUPABASE_PROJECT_URL_HERE';
-const SUPABASE_ANON_KEY='PASTE_YOUR_SUPABASE_ANON_KEY_HERE';
+https://wcdouikrcoiqmfznheaq.supabase.co
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjZG91aWtyY29pcW1mem5oZWFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQzMzQxNzEsImV4cCI6MjEwOTkxMDE3MX0.-_McTfIv0vqsKIfj6B87m-paRFNCAoGmBW7pQqtgkOA
 let sb=null,me=null,allTracks=[];const $=id=>document.getElementById(id);const configured=SUPABASE_URL.startsWith('https://')&&!SUPABASE_ANON_KEY.startsWith('PASTE_');
 function msg(s){$('message').textContent=s}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 async function loadTracks(){if(!configured){$('tracks').innerHTML='<p class="muted">Website setup is not finished yet.</p>';return}const {data,error}=await sb.from('tracks').select('id,title,artist_name,storage_path,plays').eq('status','approved').order('created_at',{ascending:false}).limit(100);if(error){$('tracks').textContent=error.message;return}allTracks=data||[];renderTracks()}
