@@ -20,8 +20,8 @@ function msg(s){$('message').textContent=s}function esc(s){return String(s??'').
 async function loadTracks(){
   var el = document.getElementById('tracks') || document.getElementById('trackList');
   try{
-    if(!window.supabase) throw new Error('Supabase library no load - check internet / CDN');
-    if(!sb) throw new Error('Supabase client no start - check URL / KEY');
+    
+    
     var res = await sb.from('tracks').select('*');
     if(res.error) throw res.error;
     var data = res.data || [];
