@@ -25,8 +25,14 @@ async function loadTracks(){
     var res = await sb.from('tracks').select('*');
     if(res.error) throw res.error;
     var data = res.data || [];
-    if(!data.length){ if(el) el.innerHTML = 'No songs yet'; return; }
-    renderTracks(data);
+allTracks = data;
+if(!data.length){
+  if(el) el.innerHTML = 'No songs yet';
+  return;
+}
+renderTracks();
+    
+    
   }catch(e){ if(el) el.innerHTML = 'Error: ' + e.message; }
 }
 function renderTracks(){const q=$('search').value.toLowerCase();const a=allTracks.filter(t=>(t.title+' '+t.artist_name).toLowerCase().includes(q));$('count').textContent=a.length+' songs';$('tracks').innerHTML='';if(!a.length){$('tracks').innerHTML='<p class="muted">No approved songs yet. Be among the first artists to upload.</p>';return}for(const t of a){const c=document.createElement('div');c.className='card';c.innerHTML='<div class="cover">♫</div><strong>'+esc(t.title)+'</strong><small>'+esc(t.artist_name)+' · '+(t.plays||0)+' plays</small><div class="row" style="margin-top:10px"><button class="btn play">▶ Play</button><a class="btn ghost" style="text-decoration:none" target="_blank" rel="noopener">↓ Download</a></div>';const url=sb.storage.from('songs').getPublicUrl(t.storage_path).data.publicUrl;c.querySelector('.play').onclick=()=>{const audio=new Audio(url);audio.play().catch(()=>alert('Could not play this song.'))};c.querySelector('a').href=url;c.querySelector('a').download=t.title+'.mp3';c.querySelector('.play').addEventListener('click',()=>sb.from('tracks').update({plays:(t.plays||0)+1}).eq('id',t.id));$('tracks').append(c)}}
