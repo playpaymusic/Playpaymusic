@@ -44,4 +44,9 @@ $('login').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);
 $('uploadForm').onsubmit=async e=>{e.preventDefault();if(!me)return msg('Please sign in first.');const f=new FormData(e.target),file=f.get('audio');if(!file||!file.size)return msg('Choose an audio file.');if(file.size>25*1024*1024)return msg('This free starter accepts songs up to 25 MB.');if(!file.type.startsWith('audio/'))return msg('Please choose an audio file.');const ext=(file.name.split('.').pop()||'mp3').replace(/[^a-z0-9]/gi,'').toLowerCase();const path=me.id+'/'+crypto.randomUUID()+'.'+ext;msg('Uploading song…');const up=await sb.storage.from('songs').upload(path,file,{contentType:file.type,upsert:false});if(up.error)return msg(up.error.message);const ins=await sb.from('tracks').insert({user_id:me.id,title:f.get('title'),artist_name:f.get('artist'),storage_path:path,status:'pending'});if(ins.error){await sb.storage.from('songs').remove([path]);return msg(ins.error.message)}msg('Song submitted for review.');e.target.reset();await loadMine()};
 $('logout').onclick=async()=>{await sb.auth.signOut();await refreshMe();msg('Signed out.')};
 if(configured){sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);refreshMe().catch(()=>{});loadTracks()}else{$('tracks').innerHTML='<p class="muted">Website setup is not finished yet.</p>'}
+async function deleteTrack(id){
+if(!confirm("You sure say you wan delete this song?")) return;
+const {error}=await sb.from('tracks').delete().eq('id',id);
+if(error){alert(error.message);} else {alert("Song deleted!"); loadTracks();}
+}
 </script></body></html>
