@@ -49,4 +49,19 @@ if(!confirm("You sure say you wan delete this song?")) return;
 const {error}=await sb.from('tracks').delete().eq('id',id);
 if(error){alert(error.message);} else {alert("Song deleted!"); loadTracks();}
 }
-</script></body></html>
+const _origRender = renderTracks;
+renderTracks = function(){
+_origRender();
+document.querySelectorAll('#tracks .card').forEach(c=>{
+if(c.querySelector('.delBtn')) return;
+const title = c.querySelector('strong')?.textContent;
+const t = allTracks.find(x=>x.title===title);
+if(!t) return;
+const b=document.createElement('button');
+b.className='btn ghost delBtn';
+b.textContent='🗑 Delete';
+b.style.marginLeft='6px';
+b.onclick=()=>deleteTrack(t.id);
+c.querySelector('.row').appendChild(b);
+});
+}; </script></body></html>
