@@ -17,7 +17,18 @@ const SUPABASE_ANON_KEY='sb_publishable_cJ5KWLW57RugLwn10fsA5Q_24pLsGXt';
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjZG91aWtyY29pcW1mem5oZWFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQzMzQxNzEsImV4cCI6MjEwOTkxMDE3MX0.-_McTfIv0vqsKIfj6B87m-paRFNCAoGmBW7pQqtgkOA
 let sb=null,me=null,allTracks=[];const $=id=>document.getElementById(id);const configured=SUPABASE_URL.startsWith('https://')&&!SUPABASE_ANON_KEY.startsWith('PASTE_');
 function msg(s){$('message').textContent=s}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-async function loadTracks(){if(!configured){$('tracks').innerHTML='<p class="muted">Website setup is not finished yet.</p>';return}const {data,error}=await sb.from('tracks').select('id,title,artist_name,storage_path,plays').eq('status','approved').order('created_at',{ascending:false}).limit(100);if(error){$('tracks').textContent=error.message;return}allTracks=data||[];renderTracks()}
+async function loadTracks(){
+  var el = document.getElementById('tracks') || document.getElementById('trackList');
+  try{
+    if(!window.supabase) throw new Error('Supabase library no load - check internet / CDN');
+    if(!sb) throw new Error('Supabase client no start - check URL / KEY');
+    var res = await sb.from('tracks').select('*');
+    if(res.error) throw res.error;
+    var data = res.data || [];
+    if(!data.length){ if(el) el.innerHTML = 'No songs yet'; return; }
+    renderTracks(data);
+  }catch(e){ if(el) el.innerHTML = 'Error: ' + e.message; }
+}
 function renderTracks(){const q=$('search').value.toLowerCase();const a=allTracks.filter(t=>(t.title+' '+t.artist_name).toLowerCase().includes(q));$('count').textContent=a.length+' songs';$('tracks').innerHTML='';if(!a.length){$('tracks').innerHTML='<p class="muted">No approved songs yet. Be among the first artists to upload.</p>';return}for(const t of a){const c=document.createElement('div');c.className='card';c.innerHTML='<div class="cover">♫</div><strong>'+esc(t.title)+'</strong><small>'+esc(t.artist_name)+' · '+(t.plays||0)+' plays</small><div class="row" style="margin-top:10px"><button class="btn play">▶ Play</button><a class="btn ghost" style="text-decoration:none" target="_blank" rel="noopener">↓ Download</a></div>';const url=sb.storage.from('songs').getPublicUrl(t.storage_path).data.publicUrl;c.querySelector('.play').onclick=()=>{const audio=new Audio(url);audio.play().catch(()=>alert('Could not play this song.'))};c.querySelector('a').href=url;c.querySelector('a').download=t.title+'.mp3';c.querySelector('.play').addEventListener('click',()=>sb.from('tracks').update({plays:(t.plays||0)+1}).eq('id',t.id));$('tracks').append(c)}}
 async function refreshMe(){if(!configured)return;const {data}=await sb.auth.getUser();me=data.user;$('userLabel').textContent=me?'Artist account':'';$('accountBtn').textContent=me?'Artist dashboard':'Artist sign in';$('authForms').classList.toggle('hidden',!!me);$('artistTools').classList.toggle('hidden',!me);if(me)loadMine()}
 async function loadMine(){const {data,error}=await sb.from('tracks').select('id,title,status,plays').eq('user_id',me.id).order('created_at',{ascending:false});if(error){$('mine').textContent=error.message;return}$('mine').innerHTML='';if(!data?.length){$('mine').textContent='No uploads yet.';return}data.forEach(t=>{const p=document.createElement('p');p.textContent=t.title+' — '+t.status+' — '+(t.plays||0)+' plays';$('mine').append(p)})}
