@@ -12,8 +12,8 @@
 <div class="box"><strong>About artist earnings</strong><p class="muted">PLAY PAY MUSIC is an early free launch. It does not yet calculate royalties or send payments. Earnings require verified stream accounting, anti-fraud checks, platform revenue and payment setup. Uploads need admin approval before appearing publicly.</p></div>
 </main><footer>© 2026 PLAY PAY MUSIC · Built for artists and listeners worldwide</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-// Paste your Supabase Project URL and anon/public key below after creating the project.
-https://wcdouikrcoiqmfznheaq.supabase.co
+const SUPABASE_URL='https://wcdouikrcoiqmfznheaq.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_cJ5KWLW57RugLwn10fsA5Q_24pLsGXt';
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjZG91aWtyY29pcW1mem5oZWFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQzMzQxNzEsImV4cCI6MjEwOTkxMDE3MX0.-_McTfIv0vqsKIfj6B87m-paRFNCAoGmBW7pQqtgkOA
 let sb=null,me=null,allTracks=[];const $=id=>document.getElementById(id);const configured=SUPABASE_URL.startsWith('https://')&&!SUPABASE_ANON_KEY.startsWith('PASTE_');
 function msg(s){$('message').textContent=s}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
