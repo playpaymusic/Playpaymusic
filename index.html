@@ -50,13 +50,17 @@ const {error}=await sb.from('tracks').delete().eq('id',id);
 if(error){alert(error.message);} else {alert("Song deleted!"); loadTracks();}
 }
 const _origRender = renderTracks;
+const _origRender = renderTracks;
 renderTracks = function(){
 _origRender();
+if(!me) return;
 document.querySelectorAll('#tracks .card').forEach(c=>{
 if(c.querySelector('.delBtn')) return;
 const title = c.querySelector('strong')?.textContent;
 const t = allTracks.find(x=>x.title===title);
 if(!t) return;
+const ownerId = t.user_id || t.owner_id || t.artist_id || t.uploader_id || t.created_by;
+if(ownerId !== me.id) return;
 const b=document.createElement('button');
 b.className='btn ghost delBtn';
 b.textContent='🗑 Delete';
