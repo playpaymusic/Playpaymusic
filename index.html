@@ -50,7 +50,6 @@ const {error}=await sb.from('tracks').delete().eq('id',id);
 if(error){alert(error.message);} else {alert("Song deleted!"); loadTracks();}
 }
 const _origRender = renderTracks;
-const _origRender = renderTracks;
 renderTracks = function(){
 _origRender();
 if(!me) return;
